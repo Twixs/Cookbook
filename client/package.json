@@ -66,7 +66,8 @@
   "scripts": {
     "start": "node scripts/start.js",
     "build": "node scripts/build.js",
-    "test": "node scripts/test.js"
+    "test": "node scripts/test.js",
+    "prettier": "prettier --config .prettierrc.json --write src/**/*.{js,jsx}"
   },
   "proxy": "http://localhost:5000",
   "eslintConfig": {
@@ -86,6 +87,7 @@
   },
   "devDependencies": {
     "node-sass": "^4.13.0",
+    "prettier": "^1.19.1",
     "sass-loader": "^8.0.0"
   },
   "jest": {

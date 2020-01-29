@@ -1,7 +1,7 @@
-import React from "react";
-import classes from "./header.module.scss";
-import { Link } from "react-router-dom";
-import add_icon from "../../assets/add_icon.png";
+import React from 'react';
+import classes from './header.module.scss';
+import { Link } from 'react-router-dom';
+import add_icon from '../../assets/add_icon.png';
 
 const Header = () => {
   return (
