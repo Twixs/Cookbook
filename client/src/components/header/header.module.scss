@@ -1,0 +1,27 @@
+@import "../../_styles/constants.scss";
+
+.header {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-between;
+  background-color: $mainThemeColor;
+  padding: 20px;
+  a {
+    text-decoration: none;
+    h1 {
+      color: white;
+    }
+  }
+  a {
+    align-self: center;
+    h5 {
+      display: flex;
+      text-decoration: none;
+      color: white;
+      .addIcon {
+        width: 25px;
+        margin-right: 5px;
+      }
+    }
+  }
+}
