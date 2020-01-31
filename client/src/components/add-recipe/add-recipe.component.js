@@ -1,13 +1,19 @@
 import React, { Component } from 'react';
+import classes from './add-recipe.module.scss';
 import axios from 'axios';
 import { Button, Form, FormGroup, Label, Input, Col } from 'reactstrap';
 import { withRouter } from 'react-router-dom';
-import classes from './add-recipe.module.scss';
+import SnackbarMessage from '../snackbar/snackbar.component';
 
 class AddRecipe extends Component {
   state = {
     name: '',
     description: '',
+    snackbar: {
+      show: false,
+      message: '',
+      status: '',
+    },
   };
 
   submitForm = (e) => {
@@ -16,9 +22,17 @@ class AddRecipe extends Component {
       axios
         .post('/api/recipes', this.state)
         .then((res) => {
+          this.setState({
+            snackbar: {
+              show: true,
+              message: 'Your recipe has successfully been saved!',
+              status: 'success',
+            },
+          });
           if (res.status === 200) {
-            alert('Your recipe has successfully been saved!');
-            this.props.history.push('/');
+            setTimeout(() => {
+              this.props.history.push('/');
+            }, 1000);
           }
         })
         .catch((err) => console.log(err));
@@ -36,6 +50,7 @@ class AddRecipe extends Component {
   render() {
     return (
       <div className={classes.addRecipeBlock}>
+        <SnackbarMessage snackbar={this.state.snackbar} />
         <h3 className={classes.pageTitle}>Add new recipe to the Cookbook!</h3>
         <Form className={classes.addForm} onSubmit={(e) => this.submitForm(e)}>
           <FormGroup row>

@@ -1,0 +1,15 @@
+.snackbar {
+  flex-wrap: nowrap;
+  .success {
+    background: #28a745;
+  }
+  .error {
+    background: #dc3545;
+  }
+  .snackbarIcon {
+    font-size: 20px;
+    position: relative;
+    top: 5px;
+    right: 5px;
+  }
+}
