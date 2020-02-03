@@ -1,29 +1,30 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
-import Card from '../card/card.component';
 import classes from './card-list.module.scss';
+
+import Card from '../card/card.component';
+import LoaderContext from '../../loader-context';
 
 const CardList = (props) => {
   const [recipes, setRecipes] = useState([]);
-  const isLoading = props.loading;
+  const loaderContext = useContext(LoaderContext);
 
   useEffect(() => {
-    isLoading(true);
+    loaderContext.setLoading(true);
     axios
       .get('/api/recipes')
       .then((res) => {
         setRecipes({ recipes: res.data });
       })
-      .then(() => isLoading(false))
+      .then(() => loaderContext.setLoading(false))
       .catch((err) => console.log(err));
   }, []);
 
-  const recipesList = recipes.recipes;
-
   return (
     <div className={classes.cardsList}>
-      {recipesList &&
-        recipesList.map((item) => {
+      {!loaderContext.isLoading &&
+        recipes.recipes &&
+        recipes.recipes.map((item) => {
           return <Card key={item._id} item={item} />;
         })}
     </div>

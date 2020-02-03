@@ -1,14 +1,31 @@
 import React, { Component } from 'react';
-import axios from 'axios';
-import { Button, Form, FormGroup, Label, Input, Col } from 'reactstrap';
 import { withRouter } from 'react-router-dom';
 import classes from './add-recipe.module.scss';
+import axios from 'axios';
+import { Button, Form, FormGroup, Label, Input, Col } from 'reactstrap';
+
+import SnackbarMessage from '../snackbar/snackbar.component';
+import LoaderContext from '../../loader-context';
 
 class AddRecipe extends Component {
-  state = {
-    name: '',
-    description: '',
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      name: '',
+      description: '',
+      snackbar: {
+        show: false,
+        message: '',
+        status: '',
+      },
+    };
+  }
+
+  static contextType = LoaderContext;
+
+  componentDidMount() {
+    this.context.setLoading(false);
+  }
 
   submitForm = (e) => {
     e.preventDefault();
@@ -16,26 +33,29 @@ class AddRecipe extends Component {
       axios
         .post('/api/recipes', this.state)
         .then((res) => {
+          this.setState({
+            snackbar: {
+              show: true,
+              message: 'Your recipe has successfully been saved!',
+              status: 'success',
+            },
+          });
           if (res.status === 200) {
-            alert('Your recipe has successfully been saved!');
-            this.props.history.push('/');
+            setTimeout(() => this.props.history.push('/'), 1000);
           }
         })
         .catch((err) => console.log(err));
     }
   };
 
-  validateTitle = (e) => {
-    this.setState({ name: e.target.value });
-  };
-
-  validateDesc = (e) => {
-    this.setState({ description: e.target.value });
+  validateField = (e) => {
+    this.setState({ [e.target.name]: e.target.value });
   };
 
   render() {
     return (
       <div className={classes.addRecipeBlock}>
+        <SnackbarMessage snackbar={this.state.snackbar} />
         <h3 className={classes.pageTitle}>Add new recipe to the Cookbook!</h3>
         <Form className={classes.addForm} onSubmit={(e) => this.submitForm(e)}>
           <FormGroup row>
@@ -43,7 +63,7 @@ class AddRecipe extends Component {
               Recipe title
             </Label>
             <Col sm={9}>
-              <Input id="recipeTitle" type="text" name="title" onChange={(e) => this.validateTitle(e)}></Input>
+              <Input id="recipeTitle" type="text" name="name" onChange={(e) => this.validateField(e)}></Input>
             </Col>
           </FormGroup>
           <FormGroup row>
@@ -56,7 +76,7 @@ class AddRecipe extends Component {
                 type="textarea"
                 name="description"
                 className={classes.description}
-                onChange={(e) => this.validateDesc(e)}
+                onChange={(e) => this.validateField(e)}
               ></Input>
             </Col>
           </FormGroup>
