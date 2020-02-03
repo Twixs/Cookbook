@@ -12,6 +12,8 @@
   "author": "Alina Kuzovkova",
   "license": "MIT",
   "dependencies": {
+    "@material-ui/core": "^4.9.0",
+    "@material-ui/icons": "^4.5.1",
     "body-parser": "^1.19.0",
     "browserify": "^16.5.0",
     "concurrently": "^5.0.0",
