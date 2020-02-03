@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
 import axios from 'axios';
 import { Button, Form, FormGroup, Label, Input, Col } from 'reactstrap';
-import { withRouter } from 'react-router-dom';
 import classes from './edit-recipe.module.scss';
+
 import SnackbarMessage from '../snackbar/snackbar.component';
+import LoaderContext from '../../loader-context';
 
 class EditRecipe extends Component {
   constructor(props) {
@@ -20,30 +22,27 @@ class EditRecipe extends Component {
     };
   }
 
-  componentWillMount() {
-    this.props.setLoading(true);
-  }
+  static contextType = LoaderContext;
 
   componentDidMount() {
-    const { id } = this.props.match.params;
+    this.context.setLoading(true);
     axios
-      .get(`/api/recipes/${id}`)
+      .get(`/api/recipes/${this.state.id}`)
       .then((res) => {
         this.setState({
           name: res.data.name,
           description: res.data.description,
         });
       })
-      .then(() => this.props.setLoading(false))
+      .then(() => this.context.setLoading(false))
       .catch((err) => console.log(err));
   }
 
   submitForm = (e) => {
     e.preventDefault();
-    const { id } = this.props.match.params;
     if (this.state.name.trim() && this.state.description.trim()) {
       axios
-        .put(`/api/recipes/${id}`, this.state)
+        .put(`/api/recipes/${this.state.id}`, this.state)
         .then((res) => {
           this.setState({
             snackbar: {
@@ -53,9 +52,7 @@ class EditRecipe extends Component {
             },
           });
           if (res.status === 200) {
-            setTimeout(() => {
-              this.props.history.push('/');
-            }, 1000);
+            setTimeout(() => this.props.history.push('/'), 1000);
           }
         })
         .catch((err) => console.log(err));
@@ -68,9 +65,8 @@ class EditRecipe extends Component {
 
   deleteRecipe = (e) => {
     e.preventDefault();
-    const { id } = this.props.match.params;
     axios
-      .delete(`/api/recipes/${id}`)
+      .delete(`/api/recipes/${this.state.id}`)
       .then((res) => {
         this.setState({
           snackbar: {
@@ -80,9 +76,7 @@ class EditRecipe extends Component {
           },
         });
         if (res.status === 200) {
-          setTimeout(() => {
-            this.props.history.push('/');
-          }, 1000);
+          setTimeout(() => this.props.history.push('/'), 1000);
         }
       })
       .catch((err) => console.log(err));
