@@ -1,134 +1,105 @@
-import React, { Component } from 'react';
+import React, { useEffect, useState } from 'react';
 import { withRouter } from 'react-router-dom';
-import axios from 'axios';
+import { connect } from 'react-redux';
 import { Button, Form, FormGroup, Label, Input, Col } from 'reactstrap';
+
 import classes from './edit-recipe.module.scss';
 
-import SnackbarMessage from '../snackbar/snackbar.component';
-import LoaderContext from '../../loader-context';
+import { getRecipe, editRecipe, deleteRecipe } from '../../actions';
 
-class EditRecipe extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      id: this.props.match.params.id,
-      name: '',
-      description: '',
-      snackbar: {
-        show: false,
-        message: '',
-        status: '',
-      },
-    };
+
+const EditRecipe = props => {
+  const id = props.match.params.id;
+  const { recipe } = props;
+  const [name, setName] = useState('');
+  const [description, setDescription] = useState('');
+
+  useEffect(() => {
+    props.getRecipe(id);
+  }, []);
+
+  useEffect(() => {
+    setName(recipe.name);
+    setDescription(recipe.description);
+  }, [recipe]);
+
+  const handleChange = (e) => {
+    e.target.name === 'name' ? setName(e.target.value) : setDescription(e.target.value);
   }
 
-  static contextType = LoaderContext;
-
-  componentDidMount() {
-    this.context.setLoading(true);
-    axios
-      .get(`/api/recipes/${this.state.id}`)
-      .then((res) => {
-        this.setState({
-          name: res.data.name,
-          description: res.data.description,
-        });
-      })
-      .then(() => this.context.setLoading(false))
-      .catch((err) => console.log(err));
-  }
-
-  submitForm = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    if (this.state.name.trim() && this.state.description.trim()) {
-      axios
-        .put(`/api/recipes/${this.state.id}`, this.state)
-        .then((res) => {
-          this.setState({
-            snackbar: {
-              show: true,
-              message: 'The recipe has been successfully updated',
-              status: 'success',
-            },
-          });
-          if (res.status === 200) {
-            setTimeout(() => this.props.history.push('/'), 1000);
-          }
-        })
-        .catch((err) => console.log(err));
+    if (recipe.name.trim() && recipe.description.trim()) {
+      const newRecipe = { id, name, description };
+      props.editRecipe(newRecipe);
+      props.history.push('/');
     }
   };
 
-  validateField = (e) => {
-    this.setState({ [e.target.name]: e.target.value });
-  };
 
-  deleteRecipe = (e) => {
+  const handleDelete = (e) => {
     e.preventDefault();
-    axios
-      .delete(`/api/recipes/${this.state.id}`)
-      .then((res) => {
-        this.setState({
-          snackbar: {
-            show: true,
-            message: `The recipe "${this.state.name}" has been deleted`,
-            status: 'error',
-          },
-        });
-        if (res.status === 200) {
-          setTimeout(() => this.props.history.push('/'), 1000);
-        }
-      })
-      .catch((err) => console.log(err));
+    const oldRecipe = { id, name, description };
+    props.deleteRecipe(oldRecipe);
+    props.history.push('/');
   };
 
-  render() {
-    return (
-      <div className={classes.editRecipeBlock}>
-        <SnackbarMessage snackbar={this.state.snackbar} />
-        <h3 className={classes.pageTitle}>Edit "{this.state.name}" recipe</h3>
-        <Form className={classes.editForm} onSubmit={(e) => this.submitForm(e)}>
-          <FormGroup row>
-            <Label sm={3} for="recipeTitle" className={classes.label}>
-              Recipe title
+  return (
+    <div className={classes.editRecipeBlock}>
+      <h3 className={classes.pageTitle}>Edit "{name}" recipe</h3>
+      <Form className={classes.editForm} onSubmit={(e) => handleSubmit(e)}>
+        <FormGroup row>
+          <Label sm={3} for="recipeTitle" className={classes.label}>
+            Recipe title
             </Label>
-            <Col sm={9}>
-              <Input
-                id="recipeTitle"
-                type="text"
-                name="name"
-                value={this.state.name}
-                onChange={(e) => this.validateField(e)}
-              ></Input>
-            </Col>
-          </FormGroup>
-          <FormGroup row>
-            <Label sm={3} for="recipeDescription" className={classes.label}>
-              Recipe description
+          <Col sm={9}>
+            <Input
+              id="recipeTitle"
+              type="text"
+              name="name"
+              value={name || ''}
+              onChange={(e) => handleChange(e)}
+            ></Input>
+          </Col>
+        </FormGroup>
+        <FormGroup row>
+          <Label sm={3} for="recipeDescription" className={classes.label}>
+            Recipe description
             </Label>
-            <Col sm={9}>
-              <Input
-                id="recipeDescription"
-                type="textarea"
-                name="description"
-                className={classes.description}
-                value={this.state.description}
-                onChange={(e) => this.validateField(e)}
-              ></Input>
-            </Col>
-          </FormGroup>
-          <FormGroup className={classes.buttonGroup}>
-            <Button color="warning" className={classes.formButton} type="submit">
-              Submit
+          <Col sm={9}>
+            <Input
+              id="recipeDescription"
+              type="textarea"
+              name="description"
+              className={classes.description}
+              value={description || ''}
+              onChange={(e) => handleChange(e)}
+            ></Input>
+          </Col>
+        </FormGroup>
+        <FormGroup className={classes.buttonGroup}>
+          <Button color="warning" className={classes.formButton} type="submit">
+            Submit
             </Button>
-            <Button color="danger" className={classes.formButton} onClick={(e) => this.deleteRecipe(e)}>
-              Delete
+          <Button color="danger" className={classes.formButton} onClick={(e) => handleDelete(e)}>
+            Delete
             </Button>
-          </FormGroup>
-        </Form>
-      </div>
-    );
+        </FormGroup>
+      </Form>
+    </div>
+  );
+}
+
+const mapStateToProps = state => {
+  return {
+    recipe: state.recipe.recipe
   }
 }
 
-export default withRouter(EditRecipe);
+const mapDispatchToProps = {
+  getRecipe,
+  editRecipe,
+  deleteRecipe
+}
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(EditRecipe));

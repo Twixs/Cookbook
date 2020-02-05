@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
-import classes from './add-recipe.module.scss';
-import axios from 'axios';
+import { connect } from 'react-redux';
 import { Button, Form, FormGroup, Label, Input, Col } from 'reactstrap';
 
-import SnackbarMessage from '../snackbar/snackbar.component';
-import LoaderContext from '../../loader-context';
+import classes from './add-recipe.module.scss';
+
+import { addRecipe } from '../../actions';
 
 class AddRecipe extends Component {
   constructor(props) {
@@ -13,38 +13,14 @@ class AddRecipe extends Component {
     this.state = {
       name: '',
       description: '',
-      snackbar: {
-        show: false,
-        message: '',
-        status: '',
-      },
     };
-  }
-
-  static contextType = LoaderContext;
-
-  componentDidMount() {
-    this.context.setLoading(false);
   }
 
   submitForm = (e) => {
     e.preventDefault();
     if (this.state.name.trim() && this.state.description.trim()) {
-      axios
-        .post('/api/recipes', this.state)
-        .then((res) => {
-          this.setState({
-            snackbar: {
-              show: true,
-              message: 'Your recipe has successfully been saved!',
-              status: 'success',
-            },
-          });
-          if (res.status === 200) {
-            setTimeout(() => this.props.history.push('/'), 1000);
-          }
-        })
-        .catch((err) => console.log(err));
+      this.props.addRecipe(this.state);
+      this.props.history.push('/');
     }
   };
 
@@ -55,7 +31,6 @@ class AddRecipe extends Component {
   render() {
     return (
       <div className={classes.addRecipeBlock}>
-        <SnackbarMessage snackbar={this.state.snackbar} />
         <h3 className={classes.pageTitle}>Add new recipe to the Cookbook!</h3>
         <Form className={classes.addForm} onSubmit={(e) => this.submitForm(e)}>
           <FormGroup row>
@@ -89,4 +64,8 @@ class AddRecipe extends Component {
   }
 }
 
-export default withRouter(AddRecipe);
+const mapDispatchToProps = {
+  addRecipe
+}
+
+export default withRouter(connect(null, mapDispatchToProps)(AddRecipe));

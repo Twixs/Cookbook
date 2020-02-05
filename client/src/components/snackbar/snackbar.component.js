@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
+import { connect } from 'react-redux';
+
 import classes from './snackbar.module.scss';
+
 import { Snackbar, SnackbarContent } from '@material-ui/core';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
@@ -42,4 +45,10 @@ const SnackbarMessage = ({ snackbar }) => {
   );
 };
 
-export default SnackbarMessage;
+const mapStateToProps = state => {
+  return {
+    snackbar: state.snackbar.snackbar
+  }
+}
+
+export default connect(mapStateToProps)(SnackbarMessage);
