@@ -29,6 +29,7 @@ router.post("/", (req, res) => {
   const addRecipe = new Recipe({
     name: req.body.name,
     description: req.body.description,
+    ingredients: req.body.ingredients,
     date: new Date()
   });
 
@@ -39,12 +40,13 @@ router.post("/", (req, res) => {
 // @desc Modify A Recipe
 // @access Public
 router.put("/:id", (req, res) => {
-  const { name, description, id } = req.body;
+  const { name, description, ingredients, id } = req.body;
 
   let query = { _id: id };
   let update = {
     name: name,
     description: description,
+    ingredients: ingredients,
     date: new Date()
   }
 

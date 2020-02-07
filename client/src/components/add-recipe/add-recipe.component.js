@@ -1,47 +1,48 @@
-import React, { Component, createRef } from 'react';
+import React, { useState, createRef } from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Button, Form, FormGroup, Label, Input, Col } from 'reactstrap';
-import HighlightOffIcon from '@material-ui/icons/HighlightOff';
+import RecipeForm from '../form/form.component';
 
 import classes from './add-recipe.module.scss';
 
-import { addRecipe } from '../../actions';
+import { addRecipe, showSnackbar } from '../../actions';
 
-class AddRecipe extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      name: '',
-      description: '',
-      ingredients: [],
-    };
+const AddRecipe = (props) => {
+  const [name, setName] = useState('');
+  const [description, setDescription] = useState('');
+  const [ingredients, setIngredients] = useState([]);
 
-    this.inputIngredientRef = createRef();
-  }
+  const inputIngredientRef = createRef();
 
-  validateField = (e) => {
-    this.setState({ [e.target.name]: e.target.value });
+  const validateField = (e) => {
+    e.target.name === 'name' ? setName(e.target.value) : setDescription(e.target.value);
   };
 
-  submitForm = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    if (this.state.name.trim() && this.state.description.trim()) {
-      this.props.addRecipe(this.state);
-      this.props.history.push('/');
+    if (name.trim() && description.trim() && ingredients.length) {
+      const newRecipe = { name, description, ingredients }
+      props.addRecipe(newRecipe);
+      props.history.push('/');
+    } else {
+      props.showSnackbar({
+        show: true,
+        message: 'Please fill in all fields of the form!',
+        status: 'error',
+      })
     }
   };
 
-  handleIngredientChange = (e) => {
-    this.inputIngredientRef.current.value = e.target.value;
+  const handleIngredientChange = (e) => {
+    inputIngredientRef.current.value = e.target.value;
   }
 
-  handleIngredientSubmit = (e) => {
+  const handleIngredientSubmit = (e) => {
     let ingredient = {
-      id: this.state.ingredients.length + 1,
-      value: this.inputIngredientRef.current.value
+      id: ingredients.length + 1,
+      value: inputIngredientRef.current.value
     }
-    this.setState((state) => ({
+    setIngredients((state) => ({
       ingredients: [
         ...state.ingredients,
         ingredient
@@ -49,84 +50,32 @@ class AddRecipe extends Component {
     }));
   }
 
-  removeItem = (e, id) => {
-    const list = [...this.state.ingredients];
+  const removeItem = (e, id) => {
+    const list = [...ingredients];
     const idx = list.findIndex(ingredient => ingredient.id === id);
     list.splice(idx, 1);
-    this.setState({ ingredients: list })
+    setIngredients({ ingredients: list })
   }
 
-  render() {
-    return (
-      <div className={classes.addRecipeBlock}>
-        <h3 className={classes.pageTitle}>Add new recipe to the Cookbook!</h3>
-        <Form className={classes.addForm} onSubmit={(e) => this.submitForm(e)}>
-          <FormGroup row>
-            <Label sm={3} for="recipeTitle" className={classes.label}>
-              Recipe title
-            </Label>
-            <Col sm={9}>
-              <Input id="recipeTitle" type="text" name="name" onChange={(e) => this.validateField(e)}></Input>
-            </Col>
-          </FormGroup>
-          <FormGroup row>
-            <Label sm={3} for="recipeDescription" className={classes.label}>
-              Recipe description
-            </Label>
-            <Col sm={9}>
-              <Input
-                id="recipeDescription"
-                type="textarea"
-                name="description"
-                className={classes.description}
-                onChange={(e) => this.validateField(e)}
-              />
-            </Col>
-          </FormGroup>
-          <hr />
-          <FormGroup row className={classes.ingredientsList}>
-            <Label sm={3} for="recipeIngredient" className={classes.label}>Ingredients:</Label>
-            <Col sm={7}>
-              <Input
-                id="recipeIngredient"
-                type="text"
-                name="ingredient"
-                onChange={(e) => this.handleIngredientChange(e)}
-                ref={this.inputIngredientRef}
-              />
-            </Col>
-            <Button
-              color="success"
-              className={classes.formButton}
-              onClick={this.handleIngredientSubmit}>
-              Add
-              </Button>
-          </FormGroup>
-          {this.state.ingredients.length > 0 &&
-            <ul className={classes.list}>
-              {this.state.ingredients.map(({ value, id }) => {
-                return <li key={id}>
-                  <HighlightOffIcon
-                    color="error"
-                    onClick={(e) => this.removeItem(e, id)}
-                  />
-                  <p>{value}</p>
-                </li>
-              })}
-            </ul>
-          }
-          <br />
-          <Button color="warning" className={classes.formButton}>
-            Submit
-          </Button>
-        </Form>
-      </div>
-    );
-  }
+  return (
+    <RecipeForm
+      type='add'
+      name={name}
+      description={description}
+      ingredients={ingredients}
+      handleChange={validateField}
+      handleSubmit={handleSubmit}
+      handleIngredientChange={handleIngredientChange}
+      handleIngredientSubmit={handleIngredientSubmit}
+      handleRemoveIngredient={removeItem}
+      inputIngredientRef={inputIngredientRef}
+    />
+  );
 }
 
 const mapDispatchToProps = {
-  addRecipe
+  addRecipe,
+  showSnackbar
 }
 
 export default withRouter(connect(null, mapDispatchToProps)(AddRecipe));
