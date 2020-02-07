@@ -7,9 +7,11 @@ import * as serviceWorker from './serviceWorker';
 import store from './store';
 
 import SnackbarMessage from './components/snackbar/snackbar.component';
+import Spinner from './components/spinner/spinner.component';
 
 ReactDOM.render(
     <Provider store={store}>
+        <Spinner />
         <App />
         <SnackbarMessage />
     </Provider>,

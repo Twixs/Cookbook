@@ -11,7 +11,7 @@ const Header = () => {
       </Link>
       <Link to="/add-recipe">
         <h5>
-          <img className={classes.addIcon} src={add_icon}></img>
+          <img className={classes.addIcon} src={add_icon} alt="Add recipe"></img>
           Add recipe
         </h5>
       </Link>

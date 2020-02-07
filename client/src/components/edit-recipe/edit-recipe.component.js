@@ -29,7 +29,7 @@ const EditRecipe = props => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (recipe.name.trim() && recipe.description.trim()) {
+    if (name.trim() && description.trim()) {
       const newRecipe = { id, name, description };
       props.editRecipe(newRecipe);
       props.history.push('/');
@@ -46,7 +46,7 @@ const EditRecipe = props => {
 
   return (
     <div className={classes.editRecipeBlock}>
-      <h3 className={classes.pageTitle}>Edit "{name}" recipe</h3>
+      <h3 className={classes.pageTitle}>Edit "{recipe.name}" recipe</h3>
       <Form className={classes.editForm} onSubmit={(e) => handleSubmit(e)}>
         <FormGroup row>
           <Label sm={3} for="recipeTitle" className={classes.label}>

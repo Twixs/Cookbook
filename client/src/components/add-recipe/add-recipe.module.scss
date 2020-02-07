@@ -27,5 +27,15 @@
       padding: 5px;
       width: 125px;
     }
+    .list {
+      list-style-type: none;
+      padding: 35px 10px 10px 10px;
+      li {
+        display: flex;
+        p {
+          padding-left: 15px;
+        }
+      }
+    }
   }
 }
