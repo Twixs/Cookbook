@@ -6,10 +6,10 @@ const Spinner = (props) => {
   return props.show ? <div className={classes.lds_dual_ring}></div> : null;
 };
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
-    show: state.recipes.pending || state.recipe.pending
-  }
-}
+    show: state.recipes.pending || state.recipe.pending,
+  };
+};
 
 export default connect(mapStateToProps)(Spinner);

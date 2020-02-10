@@ -45,10 +45,10 @@ const SnackbarMessage = ({ snackbar }) => {
   );
 };
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
-    snackbar: state.snackbar.snackbar
-  }
-}
+    snackbar: state.snackbar.snackbar,
+  };
+};
 
 export default connect(mapStateToProps)(SnackbarMessage);

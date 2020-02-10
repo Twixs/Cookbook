@@ -5,9 +5,8 @@ import RecipeForm from '../form/form.component';
 
 import { getRecipe, editRecipe, deleteRecipe } from '../../actions';
 
-
-const EditRecipe = props => {
-  const id = props.match.params.id || '';
+const EditRecipe = (props) => {
+  const id = props.match.params.id;
   const { recipe } = props;
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
@@ -27,7 +26,7 @@ const EditRecipe = props => {
 
   const handleChange = (e) => {
     e.target.name === 'name' ? setName(e.target.value) : setDescription(e.target.value);
-  }
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -38,7 +37,6 @@ const EditRecipe = props => {
     }
   };
 
-
   const handleDelete = (e) => {
     e.preventDefault();
     const oldRecipe = { id, name, description };
@@ -48,28 +46,28 @@ const EditRecipe = props => {
 
   const handleIngredientChange = (e) => {
     inputIngredientRef.current.value = e.target.value;
-  }
+  };
 
   const handleIngredientSubmit = (e) => {
     const ingredient = {
       id: ingredients.length + 1,
-      value: inputIngredientRef.current.value
-    }
+      value: inputIngredientRef.current.value,
+    };
     const nextIngredients = [...ingredients];
     nextIngredients.push(ingredient);
     setIngredients(nextIngredients);
-  }
+  };
 
   const removeIngredient = (e, id) => {
     const list = [...ingredients];
-    const idx = list.findIndex(ingredient => ingredient.id === id);
+    const idx = list.findIndex((ingredient) => ingredient.id === id);
     list.splice(idx, 1);
-    setIngredients(list)
-  }
+    setIngredients(list);
+  };
 
   return (
     <RecipeForm
-      type='edit'
+      type="edit"
       name={name}
       description={description}
       ingredients={ingredients}
@@ -82,18 +80,18 @@ const EditRecipe = props => {
       inputIngredientRef={inputIngredientRef}
     />
   );
-}
+};
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
-    recipe: state.recipe.recipe
-  }
-}
+    recipe: state.recipe.recipe,
+  };
+};
 
 const mapDispatchToProps = {
   getRecipe,
   editRecipe,
-  deleteRecipe
-}
+  deleteRecipe,
+};
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(EditRecipe));

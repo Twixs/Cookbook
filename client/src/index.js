@@ -10,12 +10,12 @@ import SnackbarMessage from './components/snackbar/snackbar.component';
 import Spinner from './components/spinner/spinner.component';
 
 ReactDOM.render(
-    <Provider store={store}>
-        <Spinner />
-        <App />
-        <SnackbarMessage />
-    </Provider>,
-    document.getElementById('root')
+  <Provider store={store}>
+    <Spinner />
+    <App />
+    <SnackbarMessage />
+  </Provider>,
+  document.getElementById('root')
 );
 
 // If you want your app to work offline and load faster, you can change

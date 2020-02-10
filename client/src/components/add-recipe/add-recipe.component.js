@@ -19,7 +19,7 @@ const AddRecipe = (props) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (name.trim() && description.trim() && ingredients.length) {
-      const newRecipe = { name, description, ingredients }
+      const newRecipe = { name, description, ingredients };
       props.addRecipe(newRecipe);
       props.history.push('/');
     } else {
@@ -27,34 +27,34 @@ const AddRecipe = (props) => {
         show: true,
         message: 'Please fill in all fields of the form!',
         status: 'error',
-      })
+      });
     }
   };
 
   const handleIngredientChange = (e) => {
     inputIngredientRef.current.value = e.target.value;
-  }
+  };
 
   const handleIngredientSubmit = (e) => {
     const ingredient = {
       id: ingredients.length + 1,
-      value: inputIngredientRef.current.value
-    }
+      value: inputIngredientRef.current.value,
+    };
     const nextIngredients = [...ingredients];
     nextIngredients.push(ingredient);
     setIngredients(nextIngredients);
-  }
+  };
 
   const removeItem = (e, id) => {
     const list = [...ingredients];
-    const idx = list.findIndex(ingredient => ingredient.id === id);
+    const idx = list.findIndex((ingredient) => ingredient.id === id);
     list.splice(idx, 1);
-    setIngredients(list)
-  }
+    setIngredients(list);
+  };
 
   return (
     <RecipeForm
-      type='add'
+      type="add"
       name={name}
       description={description}
       ingredients={ingredients}
@@ -66,11 +66,11 @@ const AddRecipe = (props) => {
       inputIngredientRef={inputIngredientRef}
     />
   );
-}
+};
 
 const mapDispatchToProps = {
   addRecipe,
-  showSnackbar
-}
+  showSnackbar,
+};
 
 export default withRouter(connect(null, mapDispatchToProps)(AddRecipe));

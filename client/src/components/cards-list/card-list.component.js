@@ -6,7 +6,6 @@ import classes from './card-list.module.scss';
 import Card from '../card/card.component';
 import { fetchRecipes } from '../../actions';
 
-
 const CardList = (props) => {
   useEffect(() => {
     props.fetchRecipes();
@@ -22,14 +21,14 @@ const CardList = (props) => {
   );
 };
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
-    recipes: state.recipes.recipes
-  }
-}
+    recipes: state.recipes.recipes,
+  };
+};
 
 const mapDispatchToProps = {
-  fetchRecipes
-}
+  fetchRecipes,
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(CardList);
