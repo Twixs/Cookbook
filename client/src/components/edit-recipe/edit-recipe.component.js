@@ -3,13 +3,11 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import RecipeForm from '../form/form.component';
 
-import classes from './edit-recipe.module.scss';
-
 import { getRecipe, editRecipe, deleteRecipe } from '../../actions';
 
 
 const EditRecipe = props => {
-  const id = props.match.params.id;
+  const id = props.match.params.id || '';
   const { recipe } = props;
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
@@ -52,28 +50,26 @@ const EditRecipe = props => {
     inputIngredientRef.current.value = e.target.value;
   }
 
-  // TODO: fix add/remove ingredients
   const handleIngredientSubmit = (e) => {
-    let ingredient = {
+    const ingredient = {
       id: ingredients.length + 1,
       value: inputIngredientRef.current.value
     }
-    let nextIngredients = [...ingredients];
+    const nextIngredients = [...ingredients];
     nextIngredients.push(ingredient);
-    setIngredients({ ingredients: nextIngredients });
+    setIngredients(nextIngredients);
   }
 
   const removeIngredient = (e, id) => {
-    console.log(id, ingredients)
     const list = [...ingredients];
     const idx = list.findIndex(ingredient => ingredient.id === id);
     list.splice(idx, 1);
-    setIngredients({ ingredients: list })
+    setIngredients(list)
   }
 
   return (
     <RecipeForm
-      type="edit"
+      type='edit'
       name={name}
       description={description}
       ingredients={ingredients}

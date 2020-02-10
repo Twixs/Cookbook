@@ -3,8 +3,6 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import RecipeForm from '../form/form.component';
 
-import classes from './add-recipe.module.scss';
-
 import { addRecipe, showSnackbar } from '../../actions';
 
 const AddRecipe = (props) => {
@@ -38,23 +36,20 @@ const AddRecipe = (props) => {
   }
 
   const handleIngredientSubmit = (e) => {
-    let ingredient = {
+    const ingredient = {
       id: ingredients.length + 1,
       value: inputIngredientRef.current.value
     }
-    setIngredients((state) => ({
-      ingredients: [
-        ...state.ingredients,
-        ingredient
-      ]
-    }));
+    const nextIngredients = [...ingredients];
+    nextIngredients.push(ingredient);
+    setIngredients(nextIngredients);
   }
 
   const removeItem = (e, id) => {
     const list = [...ingredients];
     const idx = list.findIndex(ingredient => ingredient.id === id);
     list.splice(idx, 1);
-    setIngredients({ ingredients: list })
+    setIngredients(list)
   }
 
   return (
